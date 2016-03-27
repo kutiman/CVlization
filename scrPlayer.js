@@ -1,7 +1,5 @@
 ﻿#pragma strict
 
-
-
 private var cam : GameObject;
 private var anim : Animator;
 private var moveSpeed : float = 1.6;
@@ -9,6 +7,9 @@ private var runSpeed : float = 6.6;
 public var running : boolean = false;
 
 static var runState = Animator.StringToHash("Runner.Run");
+static var jumpLeftState = Animator.StringToHash("Runner.JumpLeft");
+
+private var jumpingLeft = false;
 
 var distToGround: float;
 
@@ -48,14 +49,31 @@ function Update () {
 	} //*** End player's movement in lobby***
 	else {
 		//transform.Translate(Vector3.forward * runSpeed * Time.deltaTime);
-		if (Input.GetKeyDown(KeyCode.LeftArrow) && anim.GetCurrentAnimatorStateInfo(0).fullPathHash == runState) { 
+		if (Input.GetKeyDown(KeyCode.LeftArrow) && anim.GetCurrentAnimatorStateInfo(0).fullPathHash == runState && !anim.IsInTransition(0)) { 
 			anim.SetTrigger ("jumpLeft");
 		}
 	}
 	anim.SetBool("running", running);
+
+	if (jumpingLeft) {
+		JumpLeft();
+	}
 }
 //checking if the player is touching the ground
 function IsGrounded(): boolean {
 	return Physics.Raycast(transform.position, Vector3.down, distToGround + 0.01);
 } 
 
+public function JumpLeft () {
+	
+	transform.Translate(Vector3.left * 6 * Time.deltaTime);
+}
+
+public function SetJump (dir : int) {
+	if (dir == -1) {
+		jumpingLeft = true;
+	}
+	if (dir == 0) {
+		jumpingLeft = false;
+	}
+}
