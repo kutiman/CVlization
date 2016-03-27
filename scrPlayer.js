@@ -8,6 +8,8 @@ private var moveSpeed : float = 1.6;
 private var runSpeed : float = 6.6;
 public var running : boolean = false;
 
+static var runState = Animator.StringToHash("Runner.Run");
+
 var distToGround: float;
 
 function Start () {
@@ -45,7 +47,10 @@ function Update () {
 		}
 	} //*** End player's movement in lobby***
 	else {
-		transform.Translate(Vector3.forward * runSpeed * Time.deltaTime);
+		//transform.Translate(Vector3.forward * runSpeed * Time.deltaTime);
+		if (Input.GetKeyDown(KeyCode.LeftArrow) && anim.GetCurrentAnimatorStateInfo(0).fullPathHash == runState) { 
+			anim.SetTrigger ("jumpLeft");
+		}
 	}
 	anim.SetBool("running", running);
 }
@@ -53,3 +58,4 @@ function Update () {
 function IsGrounded(): boolean {
 	return Physics.Raycast(transform.position, Vector3.down, distToGround + 0.01);
 } 
+
