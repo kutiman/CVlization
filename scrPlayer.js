@@ -8,8 +8,10 @@ public var running : boolean = false;
 
 static var runState = Animator.StringToHash("Runner.Run");
 static var jumpLeftState = Animator.StringToHash("Runner.JumpLeft");
+static var jumpRightState = Animator.StringToHash("Runner.JumpRight");
 
 private var jumpingLeft = false;
+private var jumpingRight = false;
 
 var distToGround: float;
 
@@ -51,12 +53,20 @@ function Update () {
 		//transform.Translate(Vector3.forward * runSpeed * Time.deltaTime);
 		if (Input.GetKeyDown(KeyCode.LeftArrow) && anim.GetCurrentAnimatorStateInfo(0).fullPathHash == runState && !anim.IsInTransition(0)) { 
 			anim.SetTrigger ("jumpLeft");
+			anim.ResetTrigger ("jumpRight");
+		}
+		if (Input.GetKeyDown(KeyCode.RightArrow) && anim.GetCurrentAnimatorStateInfo(0).fullPathHash == runState && !anim.IsInTransition(0)) { 
+			anim.SetTrigger ("jumpRight");
+			anim.ResetTrigger ("jumpLeft");
 		}
 	}
 	anim.SetBool("running", running);
 
 	if (jumpingLeft) {
 		JumpLeft();
+	}
+	else if (jumpingRight) {
+		
 	}
 }
 //checking if the player is touching the ground
@@ -66,14 +76,22 @@ function IsGrounded(): boolean {
 
 public function JumpLeft () {
 	
-	transform.Translate(Vector3.left * 6 * Time.deltaTime);
+	transform.Translate(Vector3.left * 3 * Time.deltaTime);
+}
+public function JumpRight () {
+	
+	transform.Translate(Vector3.right * 3 * Time.deltaTime);
 }
 
 public function SetJump (dir : int) {
 	if (dir == -1) {
 		jumpingLeft = true;
 	}
+	else if (dir == 1) {
+		jumpingRight = true;
+	}
 	if (dir == 0) {
 		jumpingLeft = false;
+		jumpingRight = false;
 	}
 }
